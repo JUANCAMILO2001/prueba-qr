@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 class pruebaController extends Controller
 {
-    public function scan(){
-
+    public function validasi(Request $request){
     }
 }

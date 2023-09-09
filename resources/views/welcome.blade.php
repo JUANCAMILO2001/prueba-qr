@@ -56,17 +56,40 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) <span>Respuesta                     <input type="text" name="result" id="result"></span>
                     </div>
                 </div>
             </div>
         </div>
         <script type="text/javascript" src="https://unpkg.com/html5-qrcode"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             function onScanSuccess(decodedText,decodedResult){
-                console.log(`Code matched = ${decodedText}`,decodedResult);
+                alert(decodedText);
+
+                $('#result').val(decodedText);
+                let id = decodedText;
+                html5QrcodeScanner.clear().then(_ => {
+                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    $.ajax({
+
+                        url: "{{route('validasi')}}", // AQUI VA LA RUTA {route(nombre)}
+                        type: 'POST',
+                        data:{
+                            _method: "POST",  // Debería ser "_method" en lugar de "_methode"
+                            _token: CSRF_TOKEN,
+                            qr_code: id
+                        },
+                        success:function (response) {
+                            console.log(response);
+                            //alert(response);
+
+                        }
+                    });
+                }).catch(error => {
+                    alert('something wrong');
+                });
             }
 
             function onScanFailure(error){
